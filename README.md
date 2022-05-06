@@ -11,15 +11,15 @@ Features:
  * custom selection/filtering and grouping of results based on user-defined attributes 
    
 Loading of experiment runs:
- * a experiment run is defined with attributes and metrics (both as key-value pairs)
+ * an experiment run is defined with attributes and metrics (both as key-value pairs)
  * loading from user-defined multi-subfolder structures (with assigned attributes for each potential subfolder)
  * automatic searching of experiments by traversing all possible combination of subfolders  
  * customizable loading:
    * user-defined metrics types
    * user-defined metrics file parsing (defaults to json files)
 
-Technical features:
- * capable of handling over 50.000 experiment runs 
+Capabilities:
+ * handling over 50.000 experiment runs 
  * hot-reloading of dataset definitions
  * caching of experiments runs
   
