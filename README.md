@@ -5,11 +5,10 @@ Hypaan provides a web interface for visualizing results over various hyper-param
 
 Features:
  * [hiplot](https://github.com/facebookresearch/hiplot) visualization
- * individual hyper-parameter impact analyzer (comparing effect of specific value against other values)
+ * individual hyper-parameter impact analyzer
  * decision-tree visualization for analyzing the influence between different combinations of hyper-parameters
  * table and line plotting based on attribute selection and grouping  
- * custom selection/filtering and grouping of results based on user-defined attributes (e.g., selection of the best epoch or 
-   the best threshold within specific hyper-parameter groups)
+ * custom selection/filtering and grouping of results based on user-defined attributes 
    
 Loading of experiment runs:
  * a experiment run is defined with attributes and metrics (both as key-value pairs)
@@ -17,8 +16,8 @@ Loading of experiment runs:
  * automatic searching of experiments by traversing all possible combination of subfolders  
  * capable of handling over 50.000 experiment runs
  * customizable loading:
-  * user-defined metrics types
-  * user-defined metrics file parsing (defaults to json files)
+   * user-defined metrics types
+   * user-defined metrics file parsing (defaults to json files)
 
 ## Installation and dependencies 
 
@@ -40,7 +39,7 @@ Run using from installed package:
 ```bash
 hypaan [PATH_TO_ROOT_DIR] [PATH_TO_DATASET_CONFIG] [streamlit_args]
 ```
-Run provided demo by:
+Run provided demo by running from git source dir:
 ```bash
 hypaan demo --server.port=6006
 ```
@@ -67,6 +66,36 @@ Each experiment is internally defined with attributes, i.e., (key,value) pairs, 
 Experiments need to be provided in folder/subfolder structure consisting of multiple levels of potential subfolders that
 hypaan will traverse over. Each level can be defined with multiple potential subfolders, where each potential 
 subfolder can have unique attributes assigned to them. 
+
+For instance, for experiments saved in the following structure:
+ * exp/
+   * dataset_A/
+     * subfolder1/
+       * subsubfolder/
+         * results_type1/results.json
+         * results_type2/results.json
+     * subfolder2/
+       * subsubfolder/
+         * results_type1/results.json
+         * results_type2/results.json 
+
+You then define the follwing list of folders together with corresponding attributes for each subfolder:
+```python
+      [
+        'exp/',
+        'dataset_A/',
+        {
+            'subfolder1/' : ['subfolder=1','attribute2=abc'],
+            'subfolder2/' : ['subfolder=2','attribute2=xyz']
+        },
+        'subsubfolder/',        
+        {
+            '{}results_type1/' : ['type=1'],
+            '{}results_type2/' : ['type=2']
+        },
+        'results.json'
+    ]
+```
 
 Hypaan traverses over all levels of subfolders and generating every potential combination of paths where result can 
 be found. Attributes from each level are collected together to form the final set of attributes for one experiment.
