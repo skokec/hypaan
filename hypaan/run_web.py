@@ -68,7 +68,7 @@ class StreamlitHyperParamAnalyzer:
             param_list = _parser.get_available_params(exp_results)
             return exp_results, param_list, output_csv_file, traversing_details, rand_hash
 
-        st.set_page_config(layout="wide")
+        st.set_page_config(layout="wide",page_title="Hyper-Parameter Analyzer")
 
         all_db_types = list(self.dataset_def.get_experiment_types().keys())
 
