@@ -1,0 +1,9 @@
+hiplot>=0.1.31
+matplotlib>=3.3.4
+numpy==1.19.5
+Pillow>=8.4.0
+scikit_learn
+scipy>=1.5.4
+streamlit>=1.1.0
+tqdm==4.64.0
+dill>=0.2.5
