@@ -102,7 +102,9 @@ You then define the follwing list of folders together with corresponding attribu
 ```
 
 Hypaan traverses over all levels of subfolders and generating every potential combination of paths where result can 
-be found. Attributes from each level are collected together to form the final set of attributes for one experiment.
+be found. First occurance of `{}` in any generated path will be replaced with the experiment type string, which must be
+defined in `get_experiment_types()` (e.g., for example below, when using TEST experiment type it will try inserting 
+'' or 'test_'). Attributes from each level are collected together to form the final set of attributes for one experiment.
 
 Last string in folder/subfolder structure MUST be filename from which metrics are loaded. By default, hypaan uses json
 file as metrics, but this can be customized with user-provided loading function (see below).
