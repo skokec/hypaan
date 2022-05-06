@@ -4,10 +4,14 @@ Hyper-Parameter Analyzer is a tool for analyzing performance of hyper-parameters
 Hypaan provides a web interface for visualizing results over various hyper-parameter values. 
 
 Features:
- * [hiplot](https://github.com/facebookresearch/hiplot) visualization
+ * [HiPlot](https://github.com/facebookresearch/hiplot) visualization
+   ![HiPlot visualization](/res/screenshot-hiplot.png)
  * individual hyper-parameter impact analyzer
+   ![hyper-parameter impact visualization](/res/screenshot-hyperimpact.png)
  * decision-tree visualization for analyzing the influence between different combinations of hyper-parameters
+   ![hyper-parameter tree](/res/screenshot-hypertree.png)
  * table and line plotting based on attribute selection and grouping  
+   ![simple line plot](/res/screenshot-lineplot.png)
  * custom selection/filtering and grouping of results based on user-defined attributes 
    
 Loading of experiment runs:
