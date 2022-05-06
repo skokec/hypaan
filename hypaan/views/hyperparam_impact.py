@@ -108,7 +108,7 @@ def display_hyperparam_impact(parser_obj, exp_results, param_list, all_variables
         with col33:
             groupby_op = st.selectbox("Modify grouped metrics to:", display_groupby_op, **settings.as_streamlit_args('groupby_op',value_name='index'))
 
-        submit_button = st.form_submit_button(label='Analyze hyper-param impact (slow)')
+        submit_button = st.form_submit_button(label='Analyze hyper-param impact')
 
     # save settings for URL query params
     new_settings = dict(vars=plot_variables,

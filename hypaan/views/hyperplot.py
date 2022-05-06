@@ -37,7 +37,7 @@ def display_hiplot(parser_obj, exp_results, output_csv_file, param_list, existin
             with col2:
                 groupby_metric = st.multiselect("Metric:", metric_list, **settings.as_streamlit_args('groupby_metric'))
 
-            submit_button = st.form_submit_button(label='Select attribute group by best metric')
+            submit_button = st.form_submit_button(label='Apply attribute grouping by best metric')
 
         # save settings for URL query params
         new_settings = dict(groupby_attr=groupby_attr,
@@ -52,8 +52,7 @@ def display_hiplot(parser_obj, exp_results, output_csv_file, param_list, existin
             exp_results = parser_obj.experiment_group_by(exp_results, groupby_attr, groupby_metric)
 
         if len(exp_results) > 0:
-            # We create a large experiment with 1000 rows
-            xp = hip.Experiment.from_iterable(exp_results)  # EXPERIMENTAL: Reduces bandwidth at first load
+            xp = hip.Experiment.from_iterable(exp_results)
 
             # save to CSV file - but ignore if grouping by attribute is enabled
             if groupby_attr is None and existing_group_by is None:
@@ -61,7 +60,6 @@ def display_hiplot(parser_obj, exp_results, output_csv_file, param_list, existin
                 xp.to_html(output_csv_file.replace(".csv", ".html"))
 
             # xp._compress = True
-            # ... convert it to streamlit and cache that (`@st.cache` decorator)
             xp.to_streamlit(key="hiplot").display()
         st.success('Done!')
 
