@@ -1,4 +1,4 @@
-## haypaan: Hyper-Parameter Analyzer
+## hypaan: Hyper-Parameter Analyzer
 
 Hyper-Parameter Analyzer is a tool for analyzing performance of hyper-parameters on machine-learning models. 
 Hypaan provides a web interface for visualizing results over various hyper-parameter values. 
