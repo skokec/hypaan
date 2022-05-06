@@ -19,9 +19,9 @@ Loading of experiment runs:
    * user-defined metrics file parsing (defaults to json files)
 
 Capabilities:
- * handling over 50.000 experiment runs 
+ * handling of over 50.000 experiment runs 
  * hot-reloading of dataset definitions
- * caching of experiments runs
+ * caching of experiment runs
   
 ## Installation and dependencies 
 
@@ -39,19 +39,19 @@ Dependencies:
 
 ## Run web interface
 
-Run using from installed package:
+When installing through pip package, run using:
 ```bash
 hypaan [PATH_TO_ROOT_DIR] [PATH_TO_DATASET_CONFIG] [streamlit_args]
 ```
 Run provided demo by running from git source dir:
 ```bash
-hypaan demo --server.port=6006
+hypaan demo/ --server.port=6006
 ```
 View results in browser at localhost:6006.
 
 ## Running from source
 
-Checkout source from git and run using streamlit:
+When checking-out source from git, you can also run direcitly using streamlit:
 ```bash
 # clone source from git
 git clone https://github.com/skokec/hypaan.git . 
