@@ -39,7 +39,7 @@ Dependencies:
  * streamlit>=1.1.0 
  * hiplot>=0.1.31
  * others:
-   * numpy, scipy, matplotlib, scikit_learn, tqdm, Pillow, dill
+   * numpy, scipy, matplotlib, plotly, scikit_learn, tqdm, Pillow, dill
 
 ## Run web interface
 
