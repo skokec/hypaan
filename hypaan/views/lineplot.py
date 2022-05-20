@@ -209,9 +209,9 @@ def display_lineplot(parser_obj, exp_results, param_list, all_variables_str, exi
                 progress_y_axis.set_postfix(metric=lineplot_y_axis)
 
                 fig = px.line(df, x=x_axis, y=lineplot_y_axis, line_group='group_attrs', hover_name='group_attrs',
-                              color=pd_color_k, line_dash=pd_dash_k, color_discrete_sequence=px.colors.qualitative.D3,
+                              color=pd_color_k, line_dash=pd_dash_k, symbol=pd_dash_k, category_orders={x_axis: x_labels},
                               title='<b>%s%s</b>' % (common_title, lineplot_y_axis), height=786,
-                              category_orders={x_axis: x_labels})
+                              color_discrete_sequence=px.colors.qualitative.D3)
 
                 fig.update_traces(mode="markers+lines")
                 fig.update_layout(
