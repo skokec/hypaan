@@ -12,7 +12,12 @@ import importlib
 importlib.reload(parser)
 
 import numpy as np
+import pandas as pd
+import plotly.express as px
+
 from scipy.ndimage.filters import uniform_filter1d
+
+from stqdm import stqdm as tqdm
 
 def moving_average(x, w):
     return uniform_filter1d(x, size=w)
@@ -137,88 +142,93 @@ def display_lineplot(parser_obj, exp_results, param_list, all_variables_str, exi
                 forbidden_keys += existing_group_by
 
             x_labels = sorted(param_list[x_axis])
-            if color_by_attr:
-                import itertools
 
-                colors_labels = list(itertools.product(*[sorted(param_list[c]) for c in colors_by]))
+            grouped_exp = {}
 
-                colors = plt.get_cmap('tab10').colors
+            for exp in tqdm(exp_results, desc='Generating lines from experiments 1/2'):
+                keys = ["%s=%s" % (k, v) for k, v in exp.items() if
+                        k.startswith(".") is False and k not in forbidden_keys]
+                exp_str = ";".join(keys)
 
-            if dashes_by_attr:
-                dashes_labels = list(itertools.product(*[sorted(param_list[c]) for c in dashes_by]))
+                if exp_str not in grouped_exp:
+                    grouped_exp[exp_str] = dict(keys=[], x=[], color_keys=[], dash_keys=[])
+                    grouped_exp[exp_str].update({lineplot_y_axis:[] for lineplot_y_axis in y_axis_list})
 
-                dashes = ['solid', 'dotted', 'dashed', 'dashdot']
+                grouped_exp[exp_str]['keys'] = keys
+                grouped_exp[exp_str]['x'].append(exp[x_axis])
 
-            for lineplot_y_axis in y_axis_list:
-                grouped_exp = {}
+                for lineplot_y_axis in y_axis_list:
+                    grouped_exp[exp_str][lineplot_y_axis].append(exp["." + lineplot_y_axis])
 
-                for exp in exp_results:
-                    keys = ["%s=%s" % (k, v) for k, v in exp.items() if
-                            k.startswith(".") is False and k not in forbidden_keys]
-                    exp_str = ";".join(keys)
-                    if exp_str not in grouped_exp:
-                        grouped_exp[exp_str] = dict(keys=[], x=[], y=[], color_keys=[], dash_keys=[])
-                    grouped_exp[exp_str]['keys'] = keys
-                    grouped_exp[exp_str]['x'].append(exp[x_axis])
-                    grouped_exp[exp_str]['y'].append(exp["." + lineplot_y_axis])
-                    if color_by_attr:
-                        grouped_exp[exp_str]['color_keys'].append([exp[c] for c in colors_by])
+                if color_by_attr:
+                    grouped_exp[exp_str]['color_keys'].append([exp[c] for c in colors_by])
+                if dashes_by_attr:
+                    grouped_exp[exp_str]['dash_keys'].append([exp[d] for d in dashes_by])
 
-                    if dashes_by_attr:
-                        grouped_exp[exp_str]['dash_keys'].append([exp[d] for d in dashes_by])
+            common_keys = set.intersection(*[set(exp_group['keys']) for exp_group in grouped_exp.values()])
+            legend_keys = ["  ".join(sorted(list(set(exp_group['keys']) - common_keys))) for exp_group in
+                           grouped_exp.values()]
 
+            common_keys_str = "  ".join([k for k in sorted(list(common_keys)) if k in var_include])
+            common_title = common_keys_str + " - " if len(common_keys_str) else ""
 
-                common_keys = set.intersection(*[set(exp_group['keys']) for exp_group in grouped_exp.values()])
-                legend_keys = ["  ".join(sorted(list(set(exp_group['keys']) - common_keys))) for exp_group in
-                               grouped_exp.values()]
+            # using interactive Plotly
+            pd_color_k = ",".join(colors_by) if len(colors_by) > 0 else None
+            pd_dash_k = ",".join(dashes_by) if len(dashes_by) > 0 else None
 
-                common_keys_str = "  ".join([k for k in sorted(list(common_keys)) if k in var_include])
+            progress_grouped_exp = tqdm(grouped_exp.items(), desc='Generating lines from experiments 2/2')
 
-                with plot_mutex:
-                    figsize = [15, 10]
-                    legend_cfg = dict(fontsize=8)
-                    if len(grouped_exp) > 30:
-                        legend_cfg['bbox_to_anchor'] = (0,1.02,1,0.2) # place outside of plot area if too many
-                        figsize[1] *= int(len(grouped_exp) / 30)+1
+            exp_for_display = []
+            for group_attr,(k, exp_group) in zip(legend_keys,progress_grouped_exp):
+                len_data = len(exp_group['x'])
+                exp_data = {x_axis: exp_group['x'],
+                            'x': [x_labels.index(x_) for x_ in exp_group['x']],
+                            'group_attrs': [group_attr] * len_data}
 
-                    fig, ax = plt.subplots(figsize=figsize)
-                    for k, exp_group in grouped_exp.items():
-                        x = np.array([x_labels.index(x_) for x_ in exp_group['x']])
-                        y = np.array(exp_group['y'])
-                        idx = np.argsort(x)
-                        x, y = x[idx], y[idx]
-                        if y_smooth > 1:
-                            y = moving_average(y,y_smooth)
+                if pd_color_k is not None:
+                    exp_data[pd_color_k] = [",".join(c) for c in exp_group['color_keys']]
+                if pd_dash_k is not None:
+                    exp_data[pd_dash_k] = [",".join(d) for d in exp_group['dash_keys']]
 
-                        c = tuple([np.unique(c)[0] for c in zip(*exp_group['color_keys'])])
-                        d = tuple([np.unique(c)[0] for c in zip(*exp_group['dash_keys'])])
+                exp_data.update({lineplot_y_axis: exp_group[lineplot_y_axis] for lineplot_y_axis in y_axis_list})
+                exp_data.update({k.split("=")[0]: [k.split("=")[1]]*len_data for k in exp_group['keys']})
 
-                        plot_args = dict()
-                        if color_by_attr:
-                            plot_args['color'] = colors[colors_labels.index(c) % len(colors)]
-                        if dashes_by_attr:
-                            plot_args['linestyle'] = dashes[dashes_labels.index(d) % len(dashes)]
+                df = pd.DataFrame(exp_data)
+                df.sort_values(by=['x'])
+                if y_smooth > 1:
+                    for lineplot_y_axis in y_axis_list:
+                        df[lineplot_y_axis] = moving_average(df[lineplot_y_axis], y_smooth)
 
-                        ax.plot(x, y, **plot_args)
+                exp_for_display.append(df)
 
+            df = pd.concat(exp_for_display,ignore_index=True)
+            df.sort_values(by=['group_attrs','x'])
 
-                    ax.legend(legend_keys, **legend_cfg)
-                    ax.title.set_text('%s - %s' % (common_keys_str, lineplot_y_axis))
-                    ax.title.set_fontsize(fontsize=12)
-                    ax.set_xticks(range(len(x_labels)))
-                    ax.set_xticklabels(x_labels)
+            progress_y_axis = tqdm(y_axis_list, desc='Plotting graph')
+            for lineplot_y_axis in progress_y_axis:
+                progress_y_axis.set_postfix(metric=lineplot_y_axis)
 
-                    ax.set_xlabel(x_axis, fontsize=14)
-                    ax.set_ylabel(lineplot_y_axis, fontsize=14)
+                fig = px.line(df, x=x_axis, y=lineplot_y_axis, line_group='group_attrs', hover_name='group_attrs',
+                              color=pd_color_k, line_dash=pd_dash_k, color_discrete_sequence=px.colors.qualitative.D3,
+                              title='<b>%s%s</b>' % (common_title, lineplot_y_axis), height=786,
+                              category_orders={x_axis: x_labels})
 
-                    ax.xaxis.set_tick_params(labelsize=10)
-                    ax.yaxis.set_tick_params(labelsize=10)
+                fig.update_traces(mode="markers+lines")
+                fig.update_layout(
+                    title={
+                        'y': 0.92,
+                        'x': 0.5,
+                        'xanchor': 'center',
+                        'yanchor': 'top',
+                        'font': dict(size=20)
+                    },
+                    yaxis_tickfont_size=16,
+                    xaxis_tickfont_size=16,
+                    yaxis_titlefont_size=22,
+                    xaxis_titlefont_size=18,
 
-                    fig.tight_layout()
-
-                    st.pyplot(fig, dpi=600)
-
-                    plt.close(fig)
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
         st.success('Done!')
 
