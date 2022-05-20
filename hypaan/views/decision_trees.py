@@ -192,7 +192,7 @@ def display_hyperparam_decisiontrees(parser_obj, exp_results, param_list, all_va
 
     # there is variable number of varout params so we need to handle them manually
     for i in range(int(settings['varout_num'])):
-        settings.add_definition(**{'varout_%d' % i: ([], settings.LIST_FN, "tableview_form_var_exclude_%d" % i, all_variables_str)})
+        settings.add_definition(**{'varout_%d' % i: ([], settings.LIST_FN, "decisiontree_form_var_exclude_%d" % i, all_variables_str)})
 
     # parse again with additional values for varout
     settings.parse(query_params, st.session_state)
