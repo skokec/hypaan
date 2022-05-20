@@ -178,7 +178,7 @@ def display_hyperparam_decisiontrees(parser_obj, exp_results, param_list, all_va
     # set default settings as specified in URL query params
     # first val == default value, second val = parser func from/to str, third val = key in state session, fourth val = valid values
     settings.add_definition(max_depth=(4, settings.INT_FN, 'decisiontree_form_max_depth', None),
-                            metrics=(['mae'], settings.LIST_FN, 'decisiontree_form_split_metrics', metric_list),
+                            metrics=([], settings.LIST_FN, 'decisiontree_form_split_metrics', metric_list),
                             conditional_attr=([], settings.LIST_FN, 'decisiontree_form_split_conditional_attr', display_param_list),
                             ignore_attr=([], settings.LIST_FN, 'decisiontree_form_split_ignore_attr', display_param_list),
                             varin=([], settings.LIST_FN, 'decisiontree_form_var_include', all_variables_str),
@@ -254,7 +254,7 @@ def display_hyperparam_decisiontrees(parser_obj, exp_results, param_list, all_va
         # finalize new settings
         new_settings = settings.compile_new_settings(**new_settings)
 
-        if submit_button or True:
+        if submit_button:
             exp_results = copy.deepcopy(exp_results)
 
             # manually remove any vars that were previously grouped
