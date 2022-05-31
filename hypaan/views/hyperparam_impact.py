@@ -22,9 +22,9 @@ def calc_hyperparam_impact(_exp_results, param_key, selected_metrics, param_list
 
     for val in param_vals:
         # find experiments that include this val
-        positive_exp = [exp for exp in _exp_results if exp[param_key] == val]
+        positive_exp = [exp for exp in _exp_results if param_key in exp and exp[param_key] == val]
         # find experiments that do NOT include this val
-        negative_exp = [exp for exp in _exp_results if exp[param_key] != val]
+        negative_exp = [exp for exp in _exp_results if param_key in exp and exp[param_key] != val]
 
         out_key = '%s=%s' % (param_key, val)
 
@@ -245,7 +245,7 @@ def display_hyperparam_impact(parser_obj, exp_results, param_list, all_variables
                                          color=colors_by_curr, symbol=marker_by_curr, size=marker_size_vals, size_max=10 if marker_size_vals == 'default_size' else 25,
                                          hover_data=list(set(unique_params)-{'default_size'}),
                                          color_discrete_sequence=px.colors.qualitative.D3,
-                                         title="<b>%s<br>%s</b>" % (k, "  ".join(var_include)), height=786)
+                                         title="<b>%s</b><br>%s" % (k, "  ".join(var_include)), height=786)
                         fig.add_bar(x=all_mean.loc[all_mean['key'] == k]['metric'], y=all_mean.loc[all_mean['key'] == k]['diff'],
                                     showlegend=False, marker=dict(color=px.colors.qualitative.Pastel2[0]),
                                     error_y=dict(array=all_std.loc[all_std['key'] == k]['diff'],type='data',visible=True,
