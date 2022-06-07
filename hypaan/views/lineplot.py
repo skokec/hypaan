@@ -135,6 +135,9 @@ def display_lineplot(parser_obj, exp_results, param_list, all_variables_str, exi
                 # split var_include into dictionary
                 exp_results = parser_obj.experiment_retain_only_vars(exp_results, var_include)
 
+            if groupby_attr is not None and groupby_metric is not None:
+                exp_results = parser_obj.experiment_group_by(exp_results, groupby_attr, groupby_metric)
+
             forbidden_keys = [x_axis]
             if groupby_attr is not None and groupby_metric is not None:
                 forbidden_keys += groupby_attr
