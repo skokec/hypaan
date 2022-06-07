@@ -169,7 +169,7 @@ class ResultsParser:
 
         assert len(best_target) == len(best_by)
 
-        exp_to_str_fn = lambda exp: ";".join(["%s=%s" % (k, v) for k, v in exp.items() if k.startswith(self.METRICS_SUFFIX) is False and k not in group_by])
+        exp_to_str_fn = lambda exp: ";".join(["%s=%s" % (k, exp[k]) for k in sorted(exp.keys()) if k.startswith(self.METRICS_SUFFIX) is False and k not in group_by])
 
         exp_to_str_mertric_fn = lambda exp: ";".join(["%s=%s" % (k, exp[k]) for k in sorted(exp.keys()) if k.startswith(self.METRICS_SUFFIX) is False and k != "exp_type"])
 
