@@ -34,6 +34,11 @@ Install as pip package:
 pip install git+https://github.com/skokec/hypaan.git
 ```
 
+Install as new conda environment:
+```bash
+conda env create --name hypaan --file=https://github.com/skokec/hypaan/raw/master/environment.yml
+```
+
 Dependencies:
  * Python>=3.6
  * streamlit>=1.1.0 
@@ -41,10 +46,6 @@ Dependencies:
  * others:
    * numpy, scipy, matplotlib, plotly, scikit_learn, tqdm, Pillow, dill
 
-### Conda env for dependencies:
-```bash
-conda env create --name hypaan --file=https://github.com/skokec/hypaan/raw/master/environment.yml
-```
 ## Run web interface
 
 When installing through pip package, run using:
