@@ -41,6 +41,10 @@ Dependencies:
  * others:
    * numpy, scipy, matplotlib, plotly, scikit_learn, tqdm, Pillow, dill
 
+### Conda env for dependencies:
+```bash
+conda env create --name hypaan --file=https://github.com/skokec/hypaan/raw/master/environment.yml
+```
 ## Run web interface
 
 When installing through pip package, run using:
