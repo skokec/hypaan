@@ -69,7 +69,7 @@ def display_hyperparam_impact(parser_obj, exp_results, param_list, all_variables
     # set default settings as specified in URL query params
     # first val == default value, second val = parser func from/to str, third val = key in state session, fourth val = valid values
     settings.add_definition(vars=([], settings.LIST_FN, 'hyperparam_form_plot_variables',display_param_list_plus_all),
-                            metrics=(metric_list, settings.LIST_FN, 'hyperparam_form_show_metrics', metric_list),
+                            metrics=([], settings.LIST_FN, 'hyperparam_form_show_metrics', metric_list),
                             ignore_attr=([], settings.LIST_FN, 'hyperparam_form_ignore_attr', display_param_list),
                             varin=([], settings.LIST_FN, 'hyperparam_form_var_include', all_variables_str),
                             varout_num=(1, settings.INT_FN, 'hyperparam_form_num_exclude_combo', None),
@@ -188,7 +188,7 @@ def display_hyperparam_impact(parser_obj, exp_results, param_list, all_variables
             nunique = df.nunique()
             cols_to_drop = nunique[nunique == 1].index
             exp_results = df.drop(cols_to_drop, axis=1).to_dict(orient='records')
-            unique_params = [l for l in list(nunique[nunique > 1].index) if l[1:] not in selected_metrics]
+            unique_params = [l for l in list(nunique[nunique > 1].index) if l[1:] not in metric_list]
 
             # for every hyper-parameter value find performance impact
             all_p = []
