@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name='hypaan',
-    version='0.1',
+    version='0.2',
     scripts=['bin/hypaan'],
     author="Domen Tabernik",
     author_email="domen.tabernik@fri.uni-lj.si",
