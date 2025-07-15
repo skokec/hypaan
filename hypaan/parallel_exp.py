@@ -43,15 +43,31 @@ def parse_exp(res_name, attributes_key_val, metrics, METRICS_SUFFIX, load_metric
                 load_metrics_fn = dill.loads(load_metrics_fn)
 
             # parse metrics file
-            res_metrics, res_keys = load_metrics_fn(res_name)
+            res_metrics_list, res_keys_list = load_metrics_fn(res_name)
 
-            # update attributes
-            if res_keys is not None and len(res_keys) > 0:
-                attrib.update(res_keys)
+            # load_metrics_fn can return a list of dict for multiple experiments at once
+            if type(res_metrics_list) is not list:
+                res_metrics_list = [res_metrics_list]
 
-            for m in metrics:
-                if m in res_metrics:
-                    attrib[METRICS_SUFFIX + m] = res_metrics[m]
+            if type(res_keys_list) is not list:
+                res_keys_list = [res_keys_list]
+
+            final_attributes = []
+
+            for res_metrics,res_keys in zip(res_metrics_list, res_keys_list):
+                exp_attr = attrib.copy()
+
+                # update attributes
+                if res_keys is not None and len(res_keys) > 0:
+                    exp_attr.update(res_keys)
+
+                for m in metrics:
+                    if m in res_metrics:
+                        exp_attr[METRICS_SUFFIX + m] = res_metrics[m]
+                
+                final_attributes.append(exp_attr)
+            
+            attrib = final_attributes
     except Exception as e:
         logging.error("Error while parsing file '%s': " % res_name, e)
         raise Exception("Error while parsing file '%s': %s" % (res_name, str(e))) from e

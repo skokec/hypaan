@@ -111,7 +111,16 @@ class ResultsParser:
                 exp_results = self.wait_async_progress(exp_results, total_items,
                                                        desc='Reading and parsing %d potential metrics files' % total_items)
 
+            # remove empty/none experiments
             exp_results = [exp for exp in exp_results if exp is not None]
+
+            # unfold ones that contain more than one experiment in one file
+            def unfold_exp(lst):
+                for item in lst:
+                    yield from item if isinstance(item, list) else item                         
+
+            exp_results = list(unfold_exp(exp_results))
+
             for exp in exp_results:
                 for metric in self.metrics:
                     m = metric.get_name()
