@@ -189,9 +189,9 @@ def display_lineplot(parser_obj, exp_results, param_list, all_variables_str, exi
                             'group_attrs': [group_attr] * len_data}
 
                 if pd_color_k is not None:
-                    exp_data[pd_color_k] = [",".join(c) for c in exp_group['color_keys']]
+                    exp_data[pd_color_k] = [",".join(map(str,c)) for c in exp_group['color_keys']]
                 if pd_dash_k is not None:
-                    exp_data[pd_dash_k] = [",".join(d) for d in exp_group['dash_keys']]
+                    exp_data[pd_dash_k] = [",".join(map(str,d)) for d in exp_group['dash_keys']]
 
                 exp_data.update({lineplot_y_axis: exp_group[lineplot_y_axis] for lineplot_y_axis in y_axis_list})
                 exp_data.update({k.split("=")[0]: [k.split("=")[1]]*len_data for k in exp_group['keys']})
