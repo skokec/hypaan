@@ -197,7 +197,7 @@ def display_lineplot(parser_obj, exp_results, param_list, all_variables_str, exi
                 exp_data.update({k.split("=")[0]: [k.split("=")[1]]*len_data for k in exp_group['keys']})
 
                 df = pd.DataFrame(exp_data)
-                df.sort_values(by=['x'])
+                df = df.sort_values(by=['x'])
                 if y_smooth > 1:
                     for lineplot_y_axis in y_axis_list:
                         df[lineplot_y_axis] = moving_average(df[lineplot_y_axis], y_smooth)
@@ -205,7 +205,7 @@ def display_lineplot(parser_obj, exp_results, param_list, all_variables_str, exi
                 exp_for_display.append(df)
 
             df = pd.concat(exp_for_display,ignore_index=True)
-            df.sort_values(by=['group_attrs','x'])
+            df = df.sort_values(by=['group_attrs','x'])
 
             progress_y_axis = tqdm(y_axis_list, desc='Plotting graph')
             for lineplot_y_axis in progress_y_axis:
